@@ -99,6 +99,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                 },
                 indicatorBuilder: (_, index) {
                   Color color;
+                  // ignore: prefer_typing_uninitialized_variables
                   var child;
                   if (index == _processIndex) {
                     color = inProgressColor;

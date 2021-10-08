@@ -72,6 +72,8 @@ class HomeLayout extends StatelessWidget {
                       child: SizedBox(
                         height: 40,
                         child: defaultTextFormField(
+                            contentPadding:
+                                const EdgeInsetsDirectional.only(start: 5.0),
                             controller: cubit.searchController,
                             hintText: 'search',
                             keyboardType: TextInputType.text,

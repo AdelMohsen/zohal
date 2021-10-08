@@ -57,15 +57,17 @@ class ProductsDetails extends StatelessWidget {
                     child: StaggeredGridView.countBuilder(
                       itemCount: 4,
                       crossAxisCount: 4,
-                      itemBuilder: (context, index) => Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                        child: Image.asset(
-                          'assets/home/sofa.png',
-                          fit: BoxFit.cover,
-                        ),
-                      ),
+                      itemBuilder: (context, index) =>
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 4.0),
+                            child: Image.asset(
+                              'assets/home/sofa.png',
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                       staggeredTileBuilder: (index) =>
-                          const StaggeredTile.fit(1),
+                      const StaggeredTile.fit(1),
                     ),
                   ),
                   //Build_Images_Items_End
@@ -104,18 +106,20 @@ class ProductsDetails extends StatelessWidget {
                             width: double.infinity,
                             child: ListView.separated(
                               separatorBuilder: (context, index) =>
-                                  const SizedBox(
+                              const SizedBox(
                                 width: 5.0,
                               ),
                               scrollDirection: Axis.horizontal,
                               itemCount: 4,
-                              itemBuilder: (context, index) => Container(
-                                  width: 12,
-                                  height: 12,
-                                  decoration: BoxDecoration(
-                                      color: Colors.primaries[Random()
-                                          .nextInt(Colors.primaries.length)],
-                                      shape: BoxShape.circle)),
+                              itemBuilder: (context, index) =>
+                                  Container(
+                                      width: 12,
+                                      height: 12,
+                                      decoration: BoxDecoration(
+                                          color: Colors.primaries[Random()
+                                              .nextInt(
+                                              Colors.primaries.length)],
+                                          shape: BoxShape.circle)),
                             ),
                           ),
                         ),
@@ -149,42 +153,51 @@ class ProductsDetails extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                        child: Text(
-                          'Category :',
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: HexColor('#072C3F'),
-                          ),
+                        child: Row(
+                          children: [
+                            Text(
+                              'Category :',
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: HexColor('#072C3F'),
+                              ),
+                            ),
+                            Expanded(
+                              child: Text(
+                                ' Home Furniture',
+                                maxLines: 1,
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w500,
+                                  color: HexColor('#4E4E4E'),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       Expanded(
-                        child: Text(
-                          ' Home Furniture',
-                          style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w500,
-                              color: HexColor('#4E4E4E')),
-                        ),
-                      ),
-                      const Spacer(),
-                      Expanded(
-                        child: Text(
-                          'Barcode :',
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: HexColor('#072C3F'),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Text(
-                          ' 52487523',
-                          style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w500,
-                              color: HexColor('#4E4E4E')),
+                        child: Row(
+                          children: [
+                            Text(
+                              'Barcode :',
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: HexColor('#072C3F'),
+                              ),
+                            ),
+                            Expanded(
+                              child: Text(
+                                ' 52487523',
+                                style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w500,
+                                    color: HexColor('#4E4E4E')),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
@@ -195,42 +208,49 @@ class ProductsDetails extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                        child: Text(
-                          'SKU :',
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: HexColor('#072C3F'),
-                          ),
+                        child: Row(
+                          children: [
+                            Text(
+                              'SKU :',
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: HexColor('#072C3F'),
+                              ),
+                            ),
+                            Expanded(
+                              child: Text(
+                                ' Shopin15894',
+                                style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w500,
+                                    color: HexColor('#4E4E4E')),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       Expanded(
-                        child: Text(
-                          ' Shopin15894',
-                          style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w500,
-                              color: HexColor('#4E4E4E')),
-                        ),
-                      ),
-                      const Spacer(),
-                      Expanded(
-                        child: Text(
-                          'Brand :',
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: HexColor('#072C3F'),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Text(
-                          ' Casio',
-                          style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w500,
-                              color: HexColor('#4E4E4E')),
+                        child: Row(
+                          children: [
+                            Text(
+                              'Brand :',
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: HexColor('#072C3F'),
+                              ),
+                            ),
+                            Expanded(
+                              child: Text(
+                                ' Casio',
+                                style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w500,
+                                    color: HexColor('#4E4E4E')),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],

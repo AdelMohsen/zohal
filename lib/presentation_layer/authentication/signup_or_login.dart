@@ -4,6 +4,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:zohal/constance/reuse_widget.dart';
 import 'package:zohal/presentation_layer/authentication/login_screen.dart';
 import 'package:zohal/presentation_layer/authentication/signup_screen.dart';
+import 'package:zohal/presentation_layer/home_layout/home_nav_bar.dart';
 
 class SignupOrLogin extends StatelessWidget {
   const SignupOrLogin({Key? key}) : super(key: key);
@@ -83,7 +84,9 @@ class SignupOrLogin extends StatelessWidget {
                           navigateTo(context, const LoginScreen());
                         }),
                     TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          navigateTo(context, const HomeLayout());
+                        },
                         child: Text(
                           'Skip for now',
                           style: TextStyle(

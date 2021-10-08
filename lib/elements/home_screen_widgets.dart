@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:zohal/constance/reuse_widget.dart';
+import 'package:zohal/presentation_layer/products_details/products_details.dart';
 
 //Carousal_Start
 carousalLoaderWidget(context) => SizedBox(
@@ -75,59 +77,64 @@ buildNewItemProducts() => SizedBox(
       width: double.infinity,
       child: ListView.separated(
           scrollDirection: Axis.horizontal,
-          itemBuilder: (context, index) => SizedBox(
-                height: 220,
-                width: 160,
-                child: Card(
-                  elevation: 5.0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: Column(
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(10.0),
-                        child: Image.asset(
-                          'assets/home/sofa.png',
-                          fit: BoxFit.cover,
-                          width: 148,
-                          height: 108,
+          itemBuilder: (context, index) => InkWell(
+                onTap: () {
+                  navigateTo(context, const ProductsDetails());
+                },
+                child: SizedBox(
+                  height: 220,
+                  width: 160,
+                  child: Card(
+                    elevation: 5.0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: Column(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(10.0),
+                          child: Image.asset(
+                            'assets/home/sofa.png',
+                            fit: BoxFit.cover,
+                            width: 148,
+                            height: 108,
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10.0),
-                        child: Center(
-                          child: Text(
-                            'Modern Sofe',
-                            style: TextStyle(
-                              color: HexColor('#8A8A8A'),
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10.0),
+                          child: Center(
+                            child: Text(
+                              'Modern Sofe',
+                              style: TextStyle(
+                                color: HexColor('#8A8A8A'),
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              'EG 1500',
-                              style: TextStyle(
-                                  color: HexColor('#072C3F'), fontSize: 15),
-                            ),
-                            const Spacer(),
-                            IconButton(
-                                onPressed: () {},
-                                icon: Icon(
-                                  Icons.favorite_border,
-                                  color: HexColor('#8B8B8B'),
-                                )),
-                          ],
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                'EG 1500',
+                                style: TextStyle(
+                                    color: HexColor('#072C3F'), fontSize: 15),
+                              ),
+                              const Spacer(),
+                              IconButton(
+                                  onPressed: () {},
+                                  icon: Icon(
+                                    Icons.favorite_border,
+                                    color: HexColor('#8B8B8B'),
+                                  )),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -150,7 +157,7 @@ buildTradeMarksItems() => SizedBox(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10.0),
                   child: Image.network(
-                    'https://cutewallpaper.org/21/samsung-logo-hd/dY_a_Samsung-Logoa-Samsung-Mobile-Logo-PNG-Vector-Free-Download.jpg',
+                    'https://wallpaperbat.com/img/377921-samsung-galaxy-logo-wallpaper.jpg',
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -459,6 +466,7 @@ buildBagsItemProduct() => SizedBox(
               ),
           itemCount: 10),
     );
+
 buildCardUnderBagsItemProducts() => SizedBox(
       height: 125,
       child: ListView.separated(

@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:zohal/logic_layer/home_cubit/home_state.dart';
 import 'package:zohal/presentation_layer/home_layout/favourite_screen.dart';
 import 'package:zohal/presentation_layer/home_layout/home_screen.dart';
@@ -66,6 +69,84 @@ class HomeCubit extends Cubit<HomeStates> {
     if (quantityCount != 0) {
       quantityCount--;
       emit(DecrementQuantitySuccessState());
+    }
+  }
+
+//Details_Screen_End
+
+//Vendor_Account_Start
+  var vendorCurrentPasswordController = TextEditingController();
+  var vendorNewPasswordController = TextEditingController();
+  var vendorReEnterNewPasswordController = TextEditingController();
+  var vendorChangePasswordKey = GlobalKey<FormState>();
+
+//Vendor_Account_Start
+
+//image_picker
+  var vendorImage;
+  var picker = ImagePicker();
+
+  Future<void> getVendorGalleryImage(context) async {
+    var pickedImage = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedImage != null) {
+      vendorImage = File(pickedImage.path);
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Image Changed')));
+      emit(PickedVendorImageSuccessState());
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error has been occurred')));
+      emit(PickedVendorImageErrorState());
+    }
+  }
+
+  Future<void> getVendorCameraImage(context) async {
+    var pickedImage = await picker.pickImage(source: ImageSource.camera);
+    if (pickedImage != null) {
+      vendorImage = File(pickedImage.path);
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Image Changed')));
+      emit(PickedVendorImageSuccessState());
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error has been occurred')));
+      emit(PickedVendorImageErrorState());
+    }
+  }
+
+//image_picker
+
+//chats
+  var chatController = TextEditingController();
+//chats
+
+//vendor_add_request
+  var productImage;
+  Future<void> vendorAddProductImageFromGallery(context) async {
+    var pickedImage = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedImage != null) {
+      productImage = File(pickedImage.path);
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Image Changed')));
+      emit(PickedVendorImageSuccessState());
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error has been occurred')));
+      emit(PickedVendorImageErrorState());
+    }
+  }
+
+  Future<void> vendorAddProductImageFromCamera(context) async {
+    var pickedImage = await picker.pickImage(source: ImageSource.camera);
+    if (pickedImage != null) {
+      productImage = File(pickedImage.path);
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Image Changed')));
+      emit(PickedVendorImageSuccessState());
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error has been occurred')));
+      emit(PickedVendorImageErrorState());
     }
   }
 }

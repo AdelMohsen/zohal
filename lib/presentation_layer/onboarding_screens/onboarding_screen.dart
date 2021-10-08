@@ -6,6 +6,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:zohal/constance/reuse_widget.dart';
 import 'package:zohal/logic_layer/shared_pref/shared_pref.dart';
+import 'package:zohal/presentation_layer/home_layout/home_nav_bar.dart';
 
 class BoardingModel {
   final String image;
@@ -74,120 +75,117 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   child: buildPageViewItem(boardingModelList),
                 ),
                 Expanded(
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                        maxHeight: MediaQuery.of(context).size.height * .25),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: orangeButton(
-                                function: () {
-                                  pageController.nextPage(
-                                      duration:
-                                          const Duration(milliseconds: 700),
-                                      curve: Curves.fastLinearToSlowEaseIn);
-                                  if (isLast == true) {
-                                    print('done');
-                                  }
-                                },
-                                child: const AutoSizeText(
-                                  'Next',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
-                                  maxLines: 1,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 20,
-                            ),
-                            Expanded(
-                              child: whiteButton(
-                                child: AutoSizeText(
-                                  'Skip',
-                                  style: TextStyle(
-                                      color: HexColor('#FF6600'),
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w500),
-                                  maxLines: 1,
-                                ),
-                                function: () {
-                                  submit();
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                        AutoSizeText(
-                            'Your privacy is important to us.we will not share your personal information.',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontWeight: FontWeight.w400,
-                              color: HexColor('#072C3F'),
-                            ),
-                            maxLines: 2,
-                            presetFontSizes: const [26, 24, 22, 18, 16, 12]),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            TextButton(
-                                onPressed: () {},
-                                child: ConstrainedBox(
-                                  constraints: BoxConstraints(
-                                      maxWidth:
-                                          MediaQuery.of(context).size.width /
-                                              4),
-                                  child: AutoSizeText(
-                                    'Term of use',
-                                    style: TextStyle(
-                                      color: HexColor('#FF6600'),
-                                      fontSize: 20,
-                                    ),
-                                    maxLines: 1,
-                                    presetFontSizes: const [22, 18, 16, 12],
-                                  ),
-                                )),
-                            ConstrainedBox(
-                              constraints: BoxConstraints(
-                                  maxWidth:
-                                      MediaQuery.of(context).size.width / 4),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: orangeButton(
+                              function: () {
+                                pageController.nextPage(
+                                    duration: const Duration(milliseconds: 700),
+                                    curve: Curves.fastLinearToSlowEaseIn);
+                                if (isLast == true) {
+                                  print('done');
+                                }
+                              },
                               child: const AutoSizeText(
-                                'and',
+                                'Next',
                                 style: TextStyle(
-                                  color: Colors.black,
                                   fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
                                 ),
                                 maxLines: 1,
-                                presetFontSizes: [18, 16, 12],
                               ),
                             ),
-                            TextButton(
+                          ),
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          Expanded(
+                            child: whiteButton(
+                              child: AutoSizeText(
+                                'Skip',
+                                style: TextStyle(
+                                    color: HexColor('#FF6600'),
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w500),
+                                maxLines: 1,
+                              ),
+                              function: () {
+                                submit();
+                                navigateAndRemove(context, const HomeLayout());
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      AutoSizeText(
+                        'Your privacy is important to us.we will not share your personal information.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          color: HexColor('#072C3F'),
+                        ),
+                        maxLines: 2,
+                        minFontSize: 12,
+                        maxFontSize: 16,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TextButton(
                               onPressed: () {},
                               child: ConstrainedBox(
                                 constraints: BoxConstraints(
                                     maxWidth:
                                         MediaQuery.of(context).size.width / 4),
                                 child: AutoSizeText(
-                                  'Privacy policy',
+                                  'Term of use',
                                   style: TextStyle(
                                     color: HexColor('#FF6600'),
-                                    fontSize: 15,
                                   ),
                                   maxLines: 1,
-                                  presetFontSizes: const [22, 18, 16, 12],
+                                  minFontSize: 12,
+                                  maxFontSize: 16,
                                 ),
+                              )),
+                          ConstrainedBox(
+                            constraints: BoxConstraints(
+                                maxWidth:
+                                    MediaQuery.of(context).size.width / 4),
+                            child: const AutoSizeText(
+                              'and',
+                              style: TextStyle(
+                                color: Colors.black,
+                              ),
+                              maxLines: 1,
+                              minFontSize: 12,
+                              maxFontSize: 16,
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {},
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                  maxWidth:
+                                      MediaQuery.of(context).size.width / 4),
+                              child: AutoSizeText(
+                                'Privacy policy',
+                                style: TextStyle(
+                                  color: HexColor('#FF6600'),
+                                  fontSize: 15,
+                                ),
+                                maxLines: 1,
+                                presetFontSizes: const [22, 18, 16, 12],
                               ),
                             ),
-                          ],
-                        ),
-                      ],
-                    ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -215,11 +213,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         itemBuilder: (context, index) => Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Expanded(
-              child: Image(
-                image: AssetImage(boardingList[index].image),
-                fit: BoxFit.contain,
-              ),
+            Image(
+              image: AssetImage(boardingList[index].image),
+              fit: BoxFit.contain,
             ),
             ConstrainedBox(
               constraints: BoxConstraints(

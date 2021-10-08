@@ -8,10 +8,8 @@ class FavouritesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<HomeCubit,HomeStates>(
-      listener: (context, state) {
-        // TODO: implement listener
-      },
+    return BlocConsumer<HomeCubit, HomeStates>(
+      listener: (context, state) {},
       builder: (context, state) {
         return Container();
       },

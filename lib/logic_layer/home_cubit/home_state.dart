@@ -1,12 +1,15 @@
-abstract class HomeStates{}
+abstract class HomeStates {}
 
-class InitialHomeState extends HomeStates{}
+class InitialHomeState extends HomeStates {}
 
-class HomeBottomNavState extends HomeStates{}
+class HomeBottomNavState extends HomeStates {}
 
-class ChangeActiveIndexSuccess extends HomeStates{}
+class ChangeActiveIndexSuccess extends HomeStates {}
 
-class IncrementQuantitySuccessState extends HomeStates{}
+class IncrementQuantitySuccessState extends HomeStates {}
 
-class DecrementQuantitySuccessState extends HomeStates{}
+class DecrementQuantitySuccessState extends HomeStates {}
 
+class PickedVendorImageSuccessState extends HomeStates {}
+
+class PickedVendorImageErrorState extends HomeStates {}
