@@ -163,6 +163,9 @@ class VendorHomeScreen extends StatelessWidget {
                         title: drawerText(text: 'Logout'),
                         trailing: drawerIcon(),
                         leading: const Icon(Icons.logout),
+                        onTap: () {
+                          HomeCubit.get(context).signOut(context);
+                        },
                       ),
                     ],
                   ),

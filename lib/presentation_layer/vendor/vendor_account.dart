@@ -317,7 +317,7 @@ class VendorAccount extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: TextButton(
                       onPressed: () {
-                        cubit.getVendorCameraImage(context);
+                        cubit.getCustomerCameraImage(context);
                       },
                       child: Text(
                         'Camera',
@@ -334,7 +334,7 @@ class VendorAccount extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: TextButton(
                       onPressed: () {
-                        cubit.getVendorGalleryImage(context);
+                        cubit.getCustomerGalleryImage(context);
                       },
                       child: Text(
                         'Gallery',

@@ -6,14 +6,16 @@ orangeButton(
         {required void Function() function,
         required Widget child,
         double? height,
-        double? minWidth}) =>
+        double? minWidth,
+        ShapeBorder? shape,
+        }) =>
     MaterialButton(
       minWidth: minWidth ?? double.infinity - 50,
       height: height ?? 44,
       color: HexColor('#FF6600'),
       onPressed: function,
       child: child,
-      shape: RoundedRectangleBorder(
+      shape: shape ?? RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5),
       ),
     );
@@ -34,13 +36,14 @@ whiteButton({
     );
 
 defaultTextFormField(
-        {required String hintText,
+        {String? hintText,
         required TextInputType keyboardType,
         InputBorder? border,
         TextEditingController? controller,
         EdgeInsetsGeometry? contentPadding,
         Widget? prefixIcon,
-        bool? enabled}) =>
+        bool? enabled,
+        String? labelText}) =>
     TextFormField(
       enabled: enabled,
       validator: (value) => value!.isEmpty ? 'This field is required' : null,
@@ -49,7 +52,8 @@ defaultTextFormField(
         contentPadding: contentPadding ?? EdgeInsets.zero,
         fillColor: HexColor('#F3F3F3'),
         filled: true,
-        hintText: hintText,
+        hintText: hintText ?? '',
+        labelText: labelText ?? '',
         border: border ??
             OutlineInputBorder(
                 borderRadius: BorderRadius.circular(5),
@@ -59,33 +63,34 @@ defaultTextFormField(
       keyboardType: keyboardType,
     );
 
-passwordTextFormField({
-  required String hintText,
-  Widget? suffixIcon,
-  TextEditingController? controller,
-  bool? obscureText,
-  required TextInputType keyboardType,
-  Color? fillColor,
-  BorderSide? borderSide,
-  BorderSide? focusBorderSide,
-  String? Function(String?)? validator
-}) =>
+passwordTextFormField(
+        {required String hintText,
+        Widget? suffixIcon,
+        TextEditingController? controller,
+        bool? obscureText,
+        required TextInputType keyboardType,
+        Color? fillColor,
+        BorderSide? borderSide,
+        BorderSide? focusBorderSide,
+        String? Function(String?)? validator}) =>
     TextFormField(
-
       obscureText: obscureText ?? true,
       keyboardType: keyboardType,
       controller: controller,
-      validator:validator?? (value) => value!.isEmpty ? 'This field is required' : null,
+      validator: validator ??
+          (value) => value!.isEmpty ? 'This field is required' : null,
       decoration: InputDecoration(
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(5),
-          borderSide:focusBorderSide?? BorderSide.none,),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(5),
+            borderSide: focusBorderSide ?? BorderSide.none,
+          ),
           fillColor: fillColor ?? HexColor('#F3F3F3'),
           filled: true,
           hintText: hintText,
           border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(5),
-              borderSide:borderSide?? BorderSide.none,),
+            borderRadius: BorderRadius.circular(5),
+            borderSide: borderSide ?? BorderSide.none,
+          ),
           suffixIcon: suffixIcon),
     );
 
@@ -112,3 +117,5 @@ navigateTo(context, widget) =>
 
 navigateAndRemove(context, widget) => Navigator.pushAndRemoveUntil(
     context, MaterialPageRoute(builder: (context) => widget), (route) => false);
+
+navigateAndReplace(context,widget)=>  Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=>widget));

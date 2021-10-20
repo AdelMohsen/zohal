@@ -6,6 +6,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:zohal/constance/reuse_widget.dart';
 import 'package:zohal/logic_layer/shared_pref/shared_pref.dart';
+import 'package:zohal/presentation_layer/authentication/signup_or_login.dart';
 import 'package:zohal/presentation_layer/home_layout/home_nav_bar.dart';
 
 class BoardingModel {
@@ -116,7 +117,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               ),
                               function: () {
                                 submit();
-                                navigateAndRemove(context, const HomeLayout());
+                                navigateAndRemove(
+                                    context, const SignupOrLogin());
                               },
                             ),
                           ),

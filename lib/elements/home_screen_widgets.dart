@@ -1,6 +1,14 @@
+import 'package:auto_size_text_pk/auto_size_text_pk.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:zohal/constance/end_point.dart';
 import 'package:zohal/constance/reuse_widget.dart';
+import 'package:zohal/logic_layer/home_cubit/home_cubit.dart';
+import 'package:zohal/logic_layer/home_cubit/home_state.dart';
+import 'package:zohal/models/brand/brand_model.dart';
+import 'package:zohal/models/categories/categories_model.dart';
+import 'package:zohal/models/products/new_items.dart';
 import 'package:zohal/presentation_layer/products_details/products_details.dart';
 
 //Carousal_Start
@@ -32,32 +40,22 @@ carousalLoaderWidget(context) => SizedBox(
         },
       ),
     );
-
-buildCarousalImageItem(String urlImage) => Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(15.0),
-        child: Image.network(
-          urlImage,
-          fit: BoxFit.cover,
-          width: double.infinity,
-          height: double.infinity,
-        ),
-      ),
-    );
 //Carousal_End
 
 //Categories_Start
-buildCategoriesItem() => SizedBox(
+buildCategoriesItem(CategoriesModel? categoriesModel) => SizedBox(
       height: 35,
       child: ListView.separated(
           scrollDirection: Axis.horizontal,
           itemBuilder: (context, index) => Container(
                 width: 40,
                 height: 35,
-                child: const Icon(
-                  Icons.home,
-                  color: Colors.white,
+                child: FadeInImage.assetNetwork(
+                  placeholder: 'assets/gif/loading.gif',
+                  image: BASE_URL2 +
+                      categoriesModel!.categoriesData![index].categoriesIconUrl
+                          .toString(),
+                  fit: BoxFit.contain,
                 ),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5.0),
@@ -67,21 +65,20 @@ buildCategoriesItem() => SizedBox(
           separatorBuilder: (context, index) => const SizedBox(
                 width: 10.0,
               ),
-          itemCount: 7),
+          itemCount: categoriesModel!.categoriesData!.length),
     );
 //Categories_End
 
 //New_Item_Start
-buildNewItemProducts() => SizedBox(
-      height: 220,
-      width: double.infinity,
-      child: ListView.separated(
-          scrollDirection: Axis.horizontal,
-          itemBuilder: (context, index) => InkWell(
-                onTap: () {
-                  navigateTo(context, const ProductsDetails());
-                },
-                child: SizedBox(
+buildNewItemProducts(NewItems? newItemDetails, BuildContext context,
+        HomeStates state, HomeCubit cubit) =>
+    Builder(builder: (context) {
+      return SizedBox(
+        height: 220,
+        width: double.infinity,
+        child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (context, index) => SizedBox(
                   height: 220,
                   width: 160,
                   child: Card(
@@ -90,21 +87,40 @@ buildNewItemProducts() => SizedBox(
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         ClipRRect(
                           borderRadius: BorderRadius.circular(10.0),
-                          child: Image.asset(
-                            'assets/home/sofa.png',
-                            fit: BoxFit.cover,
-                            width: 148,
-                            height: 108,
+                          child: InkWell(
+                            onTap: () {
+                              navigateTo(context,
+                                  ProductsDetails(index, newItemDetails));
+                            },
+                            child: Hero(
+                              tag: newItemDetails!.itemsData[index].id
+                                  .toString(),
+                              child: FadeInImage(
+                                image: NetworkImage(
+                                  BASE_URL2 +
+                                      newItemDetails.itemsData[index]
+                                          .decoration![0].img1Url
+                                          .toString(),
+                                ),
+                                fit: BoxFit.contain,
+                                width: 148,
+                                height: 108,
+                                placeholder:
+                                    const AssetImage('assets/gif/loading.gif'),
+                              ),
+                            ),
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 10.0),
+                          padding: const EdgeInsetsDirectional.only(
+                              top: 10.0, bottom: 10.0, start: 5.0),
                           child: Center(
                             child: Text(
-                              'Modern Sofe',
+                              newItemDetails.itemsData[index].name.toString(),
                               style: TextStyle(
                                 color: HexColor('#8A8A8A'),
                                 fontSize: 15,
@@ -114,16 +130,32 @@ buildNewItemProducts() => SizedBox(
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          padding: const EdgeInsetsDirectional.only(start: 4.0),
                           child: Row(
-                            mainAxisSize: MainAxisSize.min,
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              Text(
-                                'EG 1500',
+                              AutoSizeText(
+                                'EG ' +
+                                    newItemDetails.itemsData[index].price
+                                        .toString() +
+                                    "  ",
                                 style: TextStyle(
-                                    color: HexColor('#072C3F'), fontSize: 15),
+                                  color: HexColor('#072C3F'),
+                                ),
+                                minFontSize: 8,
+                                maxFontSize: 12,
                               ),
-                              const Spacer(),
+                              AutoSizeText(
+                                newItemDetails.itemsData[index].discountPrice
+                                    .toString(),
+                                style: const TextStyle(
+                                    color: Colors.grey,
+                                    decoration: TextDecoration.lineThrough),
+                                minFontSize: 7,
+                                maxFontSize: 10,
+                              ),
+                             
                               IconButton(
                                   onPressed: () {},
                                   icon: Icon(
@@ -137,16 +169,16 @@ buildNewItemProducts() => SizedBox(
                     ),
                   ),
                 ),
-              ),
-          separatorBuilder: (context, index) => const SizedBox(
-                width: 10.0,
-              ),
-          itemCount: 10),
-    );
+            separatorBuilder: (context, index) => const SizedBox(
+                  width: 10.0,
+                ),
+            itemCount: 4),
+      );
+    });
 //New_Item_End
 
 //TradeMarks_Start
-buildTradeMarksItems() => SizedBox(
+buildTradeMarksItems(BrandModel? brandModel) => SizedBox(
       height: 40,
       child: ListView.separated(
           scrollDirection: Axis.horizontal,
@@ -156,8 +188,10 @@ buildTradeMarksItems() => SizedBox(
                 clipBehavior: Clip.antiAliasWithSaveLayer,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10.0),
-                  child: Image.network(
-                    'https://wallpaperbat.com/img/377921-samsung-galaxy-logo-wallpaper.jpg',
+                  child: FadeInImage.assetNetwork(
+                    placeholder: 'assets/gif/loading.gif',
+                    image: BASE_URL2 +
+                        brandModel!.brandData[index].brandPhotoUrl.toString(),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -167,7 +201,7 @@ buildTradeMarksItems() => SizedBox(
           separatorBuilder: (context, index) => const SizedBox(
                 width: 10.0,
               ),
-          itemCount: 10),
+          itemCount: brandModel!.brandData.length),
     );
 //TradeMarks_End
 

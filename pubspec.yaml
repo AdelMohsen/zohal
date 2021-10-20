@@ -46,6 +46,13 @@ dependencies:
   auto_size_text_pk: ^3.0.0
   shared_preferences: ^2.0.8
   image_picker: ^0.8.4+2
+  dio: ^4.0.0
+  flutter_conditional_rendering: ^2.0.0
+  fluttertoast: ^8.0.8
+  connectivity_plus: ^2.0.2
+  easy_localization: ^3.0.0
+  permission_handler: ^6.1.3
+  awesome_dialog: ^2.1.1
 
 dev_dependencies:
   flutter_test:
@@ -76,6 +83,8 @@ flutter:
     - assets/home/
     - assets/checkout/
     - assets/vendor/
+    - assets/gif/
+    - assets/translation/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

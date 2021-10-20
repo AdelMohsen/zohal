@@ -23,9 +23,10 @@ class VendorAccounting extends StatelessWidget {
               title: Text(
                 'Accounting',
                 style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                    color: primaryColor),
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                  color: primaryColor,
+                ),
               ),
               centerTitle: true,
               leading: IconButton(
