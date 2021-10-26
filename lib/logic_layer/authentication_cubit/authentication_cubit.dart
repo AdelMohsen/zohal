@@ -14,6 +14,7 @@ import 'package:zohal/models/auth_model/get_user_data_model.dart';
 import 'package:zohal/models/auth_model/login_model.dart';
 import 'package:zohal/network/dio_helper.dart';
 import 'package:zohal/presentation_layer/authentication/signup_or_login.dart';
+import 'package:zohal/presentation_layer/home_layout/home_nav_bar.dart';
 import 'authentication_state.dart';
 
 class AuthCubit extends Cubit<AuthStates> {
@@ -137,4 +138,22 @@ class AuthCubit extends Cubit<AuthStates> {
       emit(SignOutAuthErrorState());
     });
   }
+
+//Visitor_Start
+  
+  // loginAsVisitor(context) {
+  //   emit(LoginAsVisitorLoadingState());
+  //   DioHelper.getVisitorToken(url: VISITOR_LOG_IN).then((value) {
+  //     if (value.data['success'] == 1) {
+  //       userData = UserData.fromJson(value.data);
+  //       token = value.data['token']['id'];
+  //       type = 4;
+  //       navigateTo(context, const HomeLayout());
+  //       emit(LoginAsVisitorSuccessState(value.data['token']['id']));
+  //     }
+  //   }).catchError((error) {
+  //     print(error.toString());
+  //     emit(LoginAsVisitorErrorState());
+  //   });
+  // }
 }

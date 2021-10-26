@@ -23,6 +23,7 @@ void main() async {
   token = CacheHelper.readData(key: 'token') ?? '';
   type = CacheHelper.readData(key: 'type') ?? 0;
   final runTimeExpire = CacheHelper.readData(key: 'timeExpire') ?? '';
+  userId = CacheHelper.readData(key: 'userId') ?? '';
   bool? autoLoginChange;
   Widget widget;
 
@@ -35,7 +36,7 @@ void main() async {
         timeExpire = DateTime.parse(runTimeExpire as String);
         autoLoginChange = true;
         if (type == 3) {
-          widget = const HomeLayout();
+          widget = HomeLayout();
         } else if (type == 2) {
           widget = const VendorHomeScreen();
         } else {

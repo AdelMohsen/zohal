@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:zohal/constance/reuse_widget.dart';
+import 'package:zohal/logic_layer/authentication_cubit/authentication_cubit.dart';
+import 'package:zohal/logic_layer/home_cubit/home_cubit.dart';
 import 'package:zohal/presentation_layer/authentication/login_screen.dart';
 import 'package:zohal/presentation_layer/authentication/signup_screen.dart';
 import 'package:zohal/presentation_layer/home_layout/home_nav_bar.dart';
@@ -98,7 +100,7 @@ class _SignupOrLoginState extends State<SignupOrLogin> {
                         }),
                     TextButton(
                         onPressed: () {
-                          //  navigateTo(context, const HomeLayout());
+                         HomeCubit.get(context).loginAsVisitor(context);
                         },
                         child: Text(
                           'Skip for now',

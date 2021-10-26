@@ -33,6 +33,40 @@ class DioHelper {
     return await _dio.get(url, queryParameters: quires);
   }
 
+  static Future<Response> getVisitorToken({
+      required String url,
+      Map<String, dynamic>? quires,
+      String? lang,}) async{
+    _dio.options.headers = {
+      'language': lang ?? 'EN',
+      'Content-Type': 'application/json'
+    };
+    _dio.options.connectTimeout = 60 * 1000;
+    _dio.options.receiveTimeout = 60 * 1000;
+    _dio.options.sendTimeout = 60 * 1000;
+    return await _dio.get(url, queryParameters: quires);
+
+  }
+
+static Future<Response>  postImage({
+  String? lang,
+   required String url,
+  required String userId,
+  required String token ,
+  required data,
+})async{
+_dio.options.headers = {
+      'authorization': 'Bearer $token',
+      '_id':userId,
+      'language': lang ?? 'EN',
+      'content-type': 'multipart/form-data'
+    };
+     _dio.options.connectTimeout = 60 * 1000;
+    _dio.options.receiveTimeout = 60 * 1000;
+    _dio.options.sendTimeout = 60 * 1000;
+    return await _dio.post(url, data: data);
+}
+
 static Future<Response> postData({
     required String url,
     required Map<String, dynamic> data,

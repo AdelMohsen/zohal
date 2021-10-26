@@ -49,22 +49,36 @@ class CartScreen extends StatelessWidget {
                   actions: [
                     IconButton(
                         onPressed: () {
-                          AwesomeDialog(
-                            context: context,
-                            dialogType: DialogType.WARNING,
-                            animType: AnimType.TOPSLIDE,
-                            title: 'Do you want to confirm deleting all.!?'
-                                .tr()
-                                .toString(),
-                            btnCancelOnPress: () {
-                              Navigator.pop(context);
-                            },
-                            btnOkOnPress: () {
-                              cubit.deleteShoppingCartData();
-                            },
-                            btnOkColor: Colors.red,
-                            btnCancelColor: const Color(0xFF00CA71),
-                          ).show();
+                          if (shoppingCart!.shoppingCartData!.cart!.isEmpty) {
+                            AwesomeDialog(
+                              context: context,
+                              dialogType: DialogType.WARNING,
+                              animType: AnimType.TOPSLIDE,
+                              title: 'Your cart is already empty ...!'
+                                  .tr()
+                                  .toString(),
+                              btnOkOnPress: () {},
+                              btnOkColor: Colors.red,
+                              btnCancelColor: const Color(0xFF00CA71),
+                            ).show();
+                          } else {
+                            AwesomeDialog(
+                              context: context,
+                              dialogType: DialogType.WARNING,
+                              animType: AnimType.TOPSLIDE,
+                              title: 'Do you want to confirm deleting all.!?'
+                                  .tr()
+                                  .toString(),
+                              btnCancelOnPress: () {
+                                Navigator.pop(context);
+                              },
+                              btnOkOnPress: () {
+                                cubit.deleteShoppingCartData();
+                              },
+                              btnOkColor: Colors.red,
+                              btnCancelColor: const Color(0xFF00CA71),
+                            ).show();
+                          }
                         },
                         icon: const Icon(
                           Icons.clear_all,
@@ -508,8 +522,6 @@ class CartScreen extends StatelessWidget {
                       ),
                   ],
                 ));
-        
-        
           }),
     );
   }

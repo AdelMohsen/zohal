@@ -49,5 +49,8 @@
             "bold": false,
             "italic": false
         }
-    ]
+    ],
+    "[dart]": {
+        "editor.defaultFormatter": "Dart-Code.dart-code"
+    }
 }

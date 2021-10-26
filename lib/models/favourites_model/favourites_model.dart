@@ -28,7 +28,7 @@ class Product {
   String? model;
   String? price;
   String? discountPrice;
-  List<Decoration>? decoration;
+  Decoration? decoration;
 
   Product.fromJson(Map<String, dynamic> json) {
     id = json['_id'];
@@ -36,26 +36,16 @@ class Product {
     model = json['model'];
     price = json['price'];
     discountPrice = json['discountPrice'];
-    decoration = (json['decorations'] as List)
-        .map((e) => Decoration.fromJson(e))
-        .toList();
+    decoration = Decoration.fromJson(json['decorations']);
   }
 }
 
 class Decoration {
   String? color;
-  String? imgUrl1;
-  String? imgUrl2;
-  String? imgUrl3;
-  String? imgUrl4;
-  String? id;
+  String? indexPhotoUrl;
 
   Decoration.fromJson(Map<String, dynamic> json) {
     color = json['color'];
-    imgUrl1 = json['image1Url'];
-    imgUrl2 = json['image2Url'];
-    imgUrl3 = json['image3Url'];
-    imgUrl4 = json['image4Url'];
-    id = json['_id'];
+    indexPhotoUrl = json['indexPhotoUrl'];
   }
 }

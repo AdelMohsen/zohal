@@ -6,6 +6,7 @@ import 'package:zohal/constance/end_point.dart';
 import 'package:zohal/constance/reuse_widget.dart';
 import 'package:zohal/logic_layer/home_cubit/home_cubit.dart';
 import 'package:zohal/logic_layer/home_cubit/home_state.dart';
+import 'package:zohal/models/auth_model/get_user_data_model.dart';
 import 'package:zohal/models/brand/brand_model.dart';
 import 'package:zohal/models/categories/categories_model.dart';
 import 'package:zohal/models/products/new_items.dart';
@@ -71,8 +72,9 @@ buildCategoriesItem(CategoriesModel? categoriesModel) => SizedBox(
 
 //New_Item_Start
 buildNewItemProducts(NewItems? newItemDetails, BuildContext context,
-        HomeStates state, HomeCubit cubit) =>
+        HomeStates state, HomeCubit cubit)=>
     Builder(builder: (context) {
+       
       return SizedBox(
         height: 220,
         width: double.infinity,
@@ -155,12 +157,11 @@ buildNewItemProducts(NewItems? newItemDetails, BuildContext context,
                                 minFontSize: 7,
                                 maxFontSize: 10,
                               ),
-                             
                               IconButton(
                                   onPressed: () {},
                                   icon: Icon(
                                     Icons.favorite_border,
-                                    color: HexColor('#8B8B8B'),
+                                    color:  HexColor('#8B8B8B') ,
                                   )),
                             ],
                           ),

@@ -16,6 +16,9 @@ class PersonalScreen extends StatelessWidget {
   var personalLastNameController = TextEditingController();
   var personalEmailController = TextEditingController();
   var personalAddressController = TextEditingController();
+  var personalAddress2Controller = TextEditingController();
+  var personalPhone1Controller = TextEditingController();
+  var personalPhone2Controller = TextEditingController();
   var personalKey = GlobalKey<FormState>();
 
   @override
@@ -35,6 +38,12 @@ class PersonalScreen extends StatelessWidget {
             personalEmailController.text = userData.userInfo!.email.toString();
             personalAddressController.text =
                 userData.userInfo!.address.toString();
+            personalAddress2Controller.text =
+                userData.userInfo!.address2.toString();
+            personalPhone1Controller.text =
+                userData.userInfo!.phone1.toString();
+            personalPhone2Controller.text =
+                userData.userInfo!.phone2.toString();
           }
           return Conditional.single(
             context: context,
@@ -46,11 +55,11 @@ class PersonalScreen extends StatelessWidget {
                 physics: const BouncingScrollPhysics(),
                 children: [
                   CircleAvatar(
-                    backgroundImage: (cubit.vendorImage == null)
+                    backgroundImage: (cubit.customerImage == null)
                         ? NetworkImage(
-                            BASE_URL2 + userData!.userInfo!.photoUrl.toString(),
-                            scale: 2)
-                        : Image.file(cubit.vendorImage).image,
+                            BASE_URL2 + userData!.userInfo!.photoUrl.toString() + refreshUrl,
+                            scale: 1)
+                        : Image.file(cubit.customerImage!).image,
                     backgroundColor: Colors.orange,
                     minRadius: 40,
                     maxRadius: 80,
@@ -66,7 +75,7 @@ class PersonalScreen extends StatelessWidget {
                               child: orangeButton(
                                 height: 30.0,
                                 function: () {
-                                  buildBottomSheet(context, cubit);
+                                  buildBottomSheet(context, cubit, userData);
                                 },
                                 child: AutoSizeText(
                                   'Change photo'.tr().toString(),
@@ -86,7 +95,7 @@ class PersonalScreen extends StatelessWidget {
                               child: orangeButton(
                                 height: 30,
                                 function: () {
-                                  buildDialog(context, cubit);
+                                  buildDialog(context, cubit, state);
                                 },
                                 child: AutoSizeText(
                                   'Change Password'.tr().toString(),
@@ -179,7 +188,41 @@ class PersonalScreen extends StatelessWidget {
                                       ),
                                       defaultTextFormField(
                                           controller: personalAddressController,
-                                          labelText: 'Address',
+                                          labelText: 'Address 1',
+                                          keyboardType: TextInputType.text,
+                                          prefixIcon: const Icon(
+                                            Icons.home,
+                                            color: Colors.deepOrange,
+                                          )),
+                                      const SizedBox(
+                                        height: 10.0,
+                                      ),
+                                      defaultTextFormField(
+                                          controller:
+                                              personalAddress2Controller,
+                                          labelText: 'Address 2',
+                                          keyboardType: TextInputType.text,
+                                          prefixIcon: const Icon(
+                                            Icons.home,
+                                            color: Colors.deepOrange,
+                                          )),
+                                      const SizedBox(
+                                        height: 10.0,
+                                      ),
+                                      defaultTextFormField(
+                                          controller: personalPhone1Controller,
+                                          labelText: 'Phone 1',
+                                          keyboardType: TextInputType.text,
+                                          prefixIcon: const Icon(
+                                            Icons.home,
+                                            color: Colors.deepOrange,
+                                          )),
+                                      const SizedBox(
+                                        height: 10.0,
+                                      ),
+                                      defaultTextFormField(
+                                          controller: personalPhone2Controller,
+                                          labelText: 'Phone 2',
                                           keyboardType: TextInputType.text,
                                           prefixIcon: const Icon(
                                             Icons.home,
@@ -234,6 +277,34 @@ class PersonalScreen extends StatelessWidget {
                                                               .address) {
                                                         updateMap['address1'] =
                                                             personalAddressController
+                                                                .text;
+                                                      }
+
+                                                      if (personalAddress2Controller
+                                                              .text !=
+                                                          userData.userInfo!
+                                                              .address2
+                                                              .toString()) {
+                                                        updateMap['address2'] =
+                                                            personalAddress2Controller
+                                                                .text;
+                                                      }
+
+                                                      if (personalPhone1Controller
+                                                              .text !=
+                                                          userData.userInfo!
+                                                              .phone1) {
+                                                        updateMap['phone1'] =
+                                                            personalPhone1Controller
+                                                                .text;
+                                                      }
+
+                                                      if (personalPhone2Controller
+                                                              .text !=
+                                                          userData.userInfo!
+                                                              .phone2) {
+                                                        updateMap['phone2'] =
+                                                            personalPhone2Controller
                                                                 .text;
                                                       }
                                                       cubit.updateProfileData(
@@ -399,9 +470,10 @@ class PersonalScreen extends StatelessWidget {
                                   mainAxisSize: MainAxisSize.min,
                                   children: const [
                                     CircleAvatar(
-                                        backgroundColor: Colors.deepOrange,
-                                        child: Icon(Icons.shop_2,
-                                            color: Colors.white)),
+                                      backgroundColor: Colors.deepOrange,
+                                      child: Icon(Icons.shop_2,
+                                          color: Colors.white),
+                                    ),
                                     AutoSizeText(
                                       'Shipping Addresssss',
                                       maxLines: 2,
@@ -499,9 +571,10 @@ class PersonalScreen extends StatelessWidget {
     );
   }
 
-  buildDialog(BuildContext context, HomeCubit cubit) => showDialog(
+  buildDialog(BuildContext context, HomeCubit cubit, HomeStates state) =>
+      showDialog(
         context: context,
-        builder: (context) => AlertDialog(
+        builder: (ctx) => AlertDialog(
           backgroundColor: Colors.grey,
           clipBehavior: Clip.antiAliasWithSaveLayer,
           elevation: 5.0,
@@ -509,7 +582,7 @@ class PersonalScreen extends StatelessWidget {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
           content: SingleChildScrollView(
             child: Form(
-              key: cubit.vendorChangePasswordKey,
+              key: cubit.customerChangePasswordKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 mainAxisSize: MainAxisSize.min,
@@ -521,7 +594,7 @@ class PersonalScreen extends StatelessWidget {
                     hintText: 'Current Password'.tr().toString(),
                     keyboardType: TextInputType.visiblePassword,
                     obscureText: true,
-                    controller: cubit.vendorCurrentPasswordController,
+                    controller: cubit.customerCurrentPasswordController,
                     fillColor: Colors.grey[300],
                     borderSide:
                         const BorderSide(color: Colors.deepOrange, width: 2),
@@ -534,7 +607,7 @@ class PersonalScreen extends StatelessWidget {
                       hintText: 'New Password'.tr().toString(),
                       keyboardType: TextInputType.visiblePassword,
                       obscureText: true,
-                      controller: cubit.vendorNewPasswordController,
+                      controller: cubit.customerNewPasswordController,
                       borderSide:
                           const BorderSide(color: Colors.deepOrange, width: 2),
                       focusBorderSide:
@@ -543,19 +616,19 @@ class PersonalScreen extends StatelessWidget {
                   const SizedBox(
                     height: 10.0,
                   ),
-                  passwordTextFormField(
-                    hintText: 'Re-enter New Password'.tr().toString(),
-                    keyboardType: TextInputType.visiblePassword,
-                    obscureText: true,
-                    controller: cubit.vendorReEnterNewPasswordController,
-                    borderSide:
-                        const BorderSide(color: Colors.deepOrange, width: 2),
-                    focusBorderSide: const BorderSide(color: Colors.deepOrange),
-                    fillColor: Colors.grey[300],
-                  ),
-                  const SizedBox(
-                    height: 10.0,
-                  ),
+                  // passwordTextFormField(
+                  //   hintText: 'Re-enter New Password'.tr().toString(),
+                  //   keyboardType: TextInputType.visiblePassword,
+                  //   obscureText: true,
+                  //   controller: cubit.vendorReEnterNewPasswordController,
+                  //   borderSide:
+                  //       const BorderSide(color: Colors.deepOrange, width: 2),
+                  //   focusBorderSide: const BorderSide(color: Colors.deepOrange),
+                  //   fillColor: Colors.grey[300],
+                  // ),
+                  // const SizedBox(
+                  //   height: 10.0,
+                  // ),
                 ],
               ),
             ),
@@ -566,25 +639,44 @@ class PersonalScreen extends StatelessWidget {
                 fontSize: 18, fontWeight: FontWeight.w500, color: primaryColor),
           ),
           actions: [
-            orangeButton(
-              function: () {
-                if (cubit.vendorChangePasswordKey.currentState!.validate()) {
-                  print('done');
-                }
-              },
-              child: Text(
-                'Change Password'.tr().toString(),
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15),
-              ),
-            )
+            Conditional.single(
+                context: context,
+                conditionBuilder: (ctx) =>
+                    state is! ChangePersonalPasswordLoadingState,
+                widgetBuilder: (ctx) => orangeButton(
+                      function: () {
+                        if (cubit.customerChangePasswordKey.currentState!
+                            .validate()) {
+                          cubit.changeCustomerPassword(
+                              context: context,
+                              oldPassword:
+                                  cubit.customerCurrentPasswordController.text,
+                              newPassword:
+                                  cubit.customerNewPasswordController.text);
+                        }
+                      },
+                      child: Text(
+                        'Change Password'.tr().toString(),
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15),
+                      ),
+                    ),
+                fallbackBuilder: (ctx) => const Center(
+                      child: CircularProgressIndicator(
+                          backgroundColor: Colors.deepOrange,
+                          color: Colors.white),
+                    ))
           ],
         ),
       );
 
-  buildBottomSheet(BuildContext context, HomeCubit cubit) =>
+  buildBottomSheet(
+    BuildContext context,
+    HomeCubit cubit,
+    UserData? userData,
+  ) =>
       showModalBottomSheet(
         context: context,
         builder: (context) => Container(
@@ -599,7 +691,8 @@ class PersonalScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: TextButton(
                       onPressed: () {
-                        cubit.listenForCameraPermission(context);
+                        cubit.listenForCameraPermission(
+                            context, userData!.userInfo!.id);
                       },
                       child: Text(
                         'Camera'.tr().toString(),
@@ -616,7 +709,9 @@ class PersonalScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: TextButton(
                       onPressed: () {
-                        cubit.getCustomerGalleryImage(context);
+                        cubit.getCustomerGalleryImage(
+                            context: context,
+                            userId: userData!.userInfo!.id.toString());
                       },
                       child: Text(
                         'Gallery'.tr().toString(),

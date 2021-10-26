@@ -13,4 +13,10 @@ DateTime? timeExpire;
 
 Color likeGreen = const Color(0xFF00CA71);
 
+String refreshUrl = '?v=${DateTime.now().millisecondsSinceEpoch}';
+
+String? userId;
+
+String? lang = 'EN';
+
 // bool connectTimeOut = false;

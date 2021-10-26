@@ -33,3 +33,12 @@ class SignOutAuthLoadingState extends AuthStates {}
 class SignOutAuthSuccessState extends AuthStates {}
 
 class SignOutAuthErrorState extends AuthStates {}
+
+class LoginAsVisitorLoadingState extends AuthStates {}
+
+class LoginAsVisitorSuccessState extends AuthStates {
+  String tokenId;
+  LoginAsVisitorSuccessState(this.tokenId);
+}
+
+class LoginAsVisitorErrorState extends AuthStates {}

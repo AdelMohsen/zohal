@@ -61,7 +61,9 @@ class LoginScreen extends StatelessWidget {
           //     state.userLoginModel.userDataFromLogin!.firstName;
           // print(userData.userInfo!.firstName);
           //print(AuthCubit.get(context).userData!.userInfo!.phone1);
-
+          CacheHelper.saveData(
+              key: 'userId',
+              value: state.userLoginModel.userDataFromLogin!.userId);
           CacheHelper.saveData(
                   key: 'token', value: state.userLoginModel.token!.id)
               .then((value) {
@@ -87,7 +89,7 @@ class LoginScreen extends StatelessWidget {
           if (state.userLoginModel.userDataFromLogin!.type == 3) {
             navigateAndRemove(
               context,
-              const HomeLayout(),
+              HomeLayout(),
             );
           } else {
             navigateAndRemove(

@@ -6,13 +6,16 @@ import 'package:zohal/constance/reuse_widget.dart';
 import 'package:zohal/constance/strings.dart';
 import 'package:zohal/logic_layer/home_cubit/home_cubit.dart';
 import 'package:zohal/logic_layer/home_cubit/home_state.dart';
+import 'package:zohal/presentation_layer/vendor/active_order/vendor_order_screen.dart';
+import 'package:zohal/presentation_layer/vendor/ads/screen_ads.dart';
+import 'package:zohal/presentation_layer/vendor/products/screen_products.dart';
+import 'package:zohal/presentation_layer/vendor/referralls/screen_referrals.dart';
 import 'package:zohal/presentation_layer/vendor/vendor_account.dart';
 import 'package:zohal/presentation_layer/vendor/vendor_accounting.dart';
 import 'package:zohal/presentation_layer/vendor/vendor_add_request.dart';
 import 'package:zohal/presentation_layer/vendor/vendor_dashboard.dart';
-import 'package:zohal/presentation_layer/vendor/vendor_history.dart';
 import 'package:zohal/presentation_layer/vendor/vendor_referrals.dart';
-import 'package:zohal/presentation_layer/vendor/vendor_settings.dart';
+import 'package:zohal/presentation_layer/vendor/vendor_subscription.dart';
 import 'package:zohal/presentation_layer/vendor/vendor_technical_support.dart';
 
 class VendorHomeScreen extends StatelessWidget {
@@ -99,48 +102,51 @@ class VendorHomeScreen extends StatelessWidget {
                         },
                       ),
                       ListTile(
-                        title: drawerText(text: 'Account'),
+                        title: drawerText(text: 'Profile'),
                         trailing: drawerIcon(),
                         leading: const Icon(Icons.account_box_outlined),
                         onTap: () {
-                          navigateTo(context, const VendorAccount());
+                          navigateTo(context, VendorProfileScreen());
                         },
                       ),
                       ListTile(
-                        title: drawerText(text: 'Settings'),
+                        title: drawerText(text: 'Subscribtion'),
                         trailing: drawerIcon(),
-                        leading: const Icon(Icons.settings),
+                        leading: const Icon(Icons.subscriptions_rounded),
                         onTap: () {
-                          navigateTo(context, const VendorSettings());
+                          navigateTo(context, const VendorSubscribtion());
                         },
                       ),
                       ListTile(
-                        title: drawerText(text: 'Orders'),
+                        title: drawerText(text: 'Active orders'),
                         trailing: drawerIcon(),
                         leading: const Icon(Icons.reorder),
+                        onTap: () {
+                          navigateTo(context, VendorActiveOrder());
+                        },
                       ),
                       ListTile(
-                        title: drawerText(text: 'History'),
-                        trailing: drawerIcon(),
-                        leading: const Icon(Icons.history),
                         onTap: () {
-                          navigateTo(context, const VendorHistory());
+                          navigateTo(context, VendorProductsScreen());
                         },
+                        title: drawerText(text: 'Products'),
+                        trailing: drawerIcon(),
+                        leading: const Icon(Icons.reorder),
                       ),
                       ListTile(
                         title: drawerText(text: 'Referrals'),
                         trailing: drawerIcon(),
                         leading: const Icon(Icons.details),
                         onTap: () {
-                          navigateTo(context, const VendorReferrals());
+                          navigateTo(context, VendorReferralsScreen());
                         },
                       ),
                       ListTile(
-                        title: drawerText(text: 'Add Request'),
+                        title: drawerText(text: 'Advertisment'),
                         trailing: drawerIcon(),
                         leading: const Icon(Icons.add),
                         onTap: () {
-                          navigateTo(context, const VendorAddRequest());
+                          navigateTo(context, VendorAdsScreen());
                         },
                       ),
                       ListTile(

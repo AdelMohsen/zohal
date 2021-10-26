@@ -9,10 +9,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_conditional_rendering/conditional.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:zohal/constance/end_point.dart';
+import 'package:zohal/constance/reuse_widget.dart';
+import 'package:zohal/constance/strings.dart';
 import 'package:zohal/elements/home_screen_widgets.dart';
 import 'package:zohal/logic_layer/authentication_cubit/authentication_cubit.dart';
 import 'package:zohal/logic_layer/home_cubit/home_cubit.dart';
 import 'package:zohal/logic_layer/home_cubit/home_state.dart';
+import 'package:zohal/products_section/electronics_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -21,39 +24,72 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => HomeCubit()..getBannersData()),
+        BlocProvider(create: (context) => HomeCubit()..getTopBannersData()),
       ],
       child: BlocConsumer<HomeCubit, HomeStates>(
         listener: (context, state) {
-          if (state is GetBannersDataSuccessState) {
-            HomeCubit.get(context).getCategoriesIcon();
-            HomeCubit.get(context).getNewItemsData();
-          }
-          if (state is GetCategoriesIconSuccessState) {
-            HomeCubit.get(context).getBrandIcon();
-          }
-          if (state is GetBannersDataErrorState) {
-            HomeCubit.get(context).getCategoriesIcon();
-            HomeCubit.get(context).getNewItemsData();
-          }
-          if (state is GetCategoriesIconErrorState) {
-            HomeCubit.get(context).getBrandIcon();
+          if (type != 4) {
+            if (state is GetTopBannersDataSuccessState) {
+              HomeCubit.get(context).getProfileData();
+              HomeCubit.get(context).getCategoriesIcon();
+            }
+            if (state is GetCategoriesIconSuccessState) {
+              HomeCubit.get(context).getNewItemsData();
+              HomeCubit.get(context).getBrandIcon();
+            }
+            if (state is GetNewItemsDataSuccessState) {
+              HomeCubit.get(context).getMiddelBannersData();
+              HomeCubit.get(context).getBottomBannersData();
+            }
+            if (state is GetTopBannersDataErrorState) {
+              HomeCubit.get(context).getProfileData();
+              HomeCubit.get(context).getCategoriesIcon();
+            }
+            if (state is GetCategoriesIconErrorState) {
+              HomeCubit.get(context).getNewItemsData();
+              HomeCubit.get(context).getBrandIcon();
+            }
+            if (state is GetNewItemsDataErrorState) {
+              HomeCubit.get(context).getMiddelBannersData();
+              HomeCubit.get(context).getBottomBannersData();
+            }
+          } else {
+            if (state is GetTopBannersDataSuccessState) {
+              HomeCubit.get(context).getCategoriesIcon();
+              HomeCubit.get(context).getNewItemsData();
+            }
+            if (state is GetCategoriesIconSuccessState) {
+              HomeCubit.get(context).getBrandIcon();
+              HomeCubit.get(context).getMiddelBannersData();
+              HomeCubit.get(context).getBottomBannersData();
+            }
+            if (state is GetTopBannersDataErrorState) {
+              HomeCubit.get(context).getCategoriesIcon();
+              HomeCubit.get(context).getNewItemsData();
+            }
+            if (state is GetCategoriesIconErrorState) {
+              HomeCubit.get(context).getBrandIcon();
+              HomeCubit.get(context).getMiddelBannersData();
+              HomeCubit.get(context).getBottomBannersData();
+            }
           }
         },
         builder: (context, state) {
           var cubit = HomeCubit.get(context);
+          var userData = HomeCubit.get(context).userData;
           return Scaffold(
-            body: SingleChildScrollView(physics: const BouncingScrollPhysics(),
+            body: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
               child: Padding(
                 padding: const EdgeInsetsDirectional.only(start: 5.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    //Carousal_Slider_Start
+                    //Todo : Top_Carousal_Slider_Start
                     Conditional.single(
                       context: context,
                       conditionBuilder: (context) =>
-                          state is! GetBannersDataLoadingState,
+                          cubit.bannersModel1 != null,
                       widgetBuilder: (context) => Padding(
                         padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
                         child: CarouselSlider(
@@ -74,7 +110,7 @@ class HomeScreen extends StatelessWidget {
                             enableInfiniteScroll: true,
                             enlargeCenterPage: true,
                           ),
-                          items: cubit.bannersModel!.data
+                          items: cubit.bannersModel1!.data
                               .map((e) => Padding(
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 10.0),
@@ -82,7 +118,7 @@ class HomeScreen extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(15.0),
                                       child: Image.network(
                                         BASE_URL2 + e.bannerUrl.toString(),
-                                        fit: BoxFit.cover,
+                                        fit: BoxFit.contain,
                                         width: double.infinity,
                                         height: double.infinity,
                                       ),
@@ -171,7 +207,8 @@ class HomeScreen extends StatelessWidget {
                     //     ),
                     //   ),
                     // ),
-                    //Carousal_Slider_End
+
+                    //Todo :Top_Carousal_Slider_End
 
                     //Categories_Product_Start
                     Padding(
@@ -216,7 +253,9 @@ class HomeScreen extends StatelessWidget {
                             child: Text(
                               'All',
                               style: TextStyle(
-                                  color: HexColor('#195F82'), fontSize: 10.0),
+                                color: HexColor('#195F82'),
+                                fontSize: 10.0,
+                              ),
                             ),
                           ),
                           decoration: BoxDecoration(
@@ -242,9 +281,15 @@ class HomeScreen extends StatelessWidget {
                     ),
                     Conditional.single(
                       context: context,
-                      conditionBuilder: (context) => cubit.newItems != null,
+                      conditionBuilder: (context) => type != 4
+                          ? cubit.newItems != null && userData != null
+                          : cubit.newItems != null,
                       widgetBuilder: (context) => buildNewItemProducts(
-                          cubit.newItems, context, state, cubit),
+                        cubit.newItems,
+                        context,
+                        state,
+                        cubit,
+                      ),
                       fallbackBuilder: (context) => const SizedBox(
                         height: 220.0,
                         child: Center(
@@ -299,7 +344,63 @@ class HomeScreen extends StatelessWidget {
                     buildPopularItemProducts(),
                     //Popular_Items_End
 
-                    //Special_Offer_Start
+                    //Todo : Middel_Carousal_Start
+                    const SizedBox(
+                      height: 10.0,
+                    ),
+                    Conditional.single(
+                      context: context,
+                      conditionBuilder: (context) =>
+                         cubit.bannersModel2 !=null,
+                      widgetBuilder: (context) => Padding(
+                        padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
+                        child: CarouselSlider(
+                          options: CarouselOptions(
+                            onPageChanged: (index, carousalPageChangedReason) {
+                              // cubit.changeActiveIndex(index);
+                            },
+                            height: 135.0,
+                            scrollDirection: Axis.horizontal,
+                            initialPage: 1,
+                            scrollPhysics: const BouncingScrollPhysics(),
+                            autoPlay: true,
+                            autoPlayAnimationDuration:
+                                const Duration(seconds: 1),
+                            autoPlayCurve: Curves.fastLinearToSlowEaseIn,
+                            autoPlayInterval: const Duration(seconds: 3),
+                            viewportFraction: .99,
+                            enableInfiniteScroll: true,
+                            enlargeCenterPage: true,
+                          ),
+                          items: cubit.bannersModel2!.data
+                              .map((e) => Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10.0),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(15.0),
+                                      child: Image.network(
+                                        BASE_URL2 + e.bannerUrl.toString(),
+                                        fit: BoxFit.contain,
+                                        width: double.infinity,
+                                        height: double.infinity,
+                                      ),
+                                    ),
+                                  ))
+                              .toList(),
+                        ),
+                      ),
+                      fallbackBuilder: (context) => const SizedBox(
+                          height: 135.0,
+                          child: Center(
+                              child: CircularProgressIndicator(
+                            color: Colors.deepOrange,
+                            backgroundColor: Colors.grey,
+                          ))),
+                    ),
+                    //buildCardForSpecialOffer(),
+                    //Todo : Middel_Carousal_End
+
+                    //Todo : SpcialOfferItemProducts_START
                     Padding(
                       padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
                       child: Text(
@@ -311,41 +412,28 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    buildCardForSpecialOffer(),
-                    const SizedBox(
-                      height: 20.0,
-                    ),
                     buildSpecialOfferItemProducts(),
-                    //Special_Offer_End
+                    //Todo : SpcialOfferItemProducts_END
 
                     //Electronics_Start
                     Padding(
                       padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
-                      child: Text(
-                        'Electronics'.tr().toString(),
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: HexColor('#072C3F'),
+                      child: InkWell(
+                        onTap: () {
+                          navigateTo(context, const ElectronicsScreen());
+                        },
+                        child: Text(
+                          'Electronics'.tr().toString(),
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: HexColor('#072C3F'),
+                          ),
                         ),
                       ),
                     ),
                     buildElectronicsItemProducts(),
                     //Electronics_End
-                    const SizedBox(
-                      height: 20.0,
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      height: 125,
-                      child: ClipRRect(
-                        child: Image.asset(
-                          'assets/home/shoseOffer.png',
-                          fit: BoxFit.cover,
-                        ),
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                    ),
 
                     //Bags_Start
                     Padding(
@@ -361,13 +449,66 @@ class HomeScreen extends StatelessWidget {
                     ),
                     buildBagsItemProduct(),
                     //Bags_End
+
+                    //Todo : Bottom_Carousal_Start
+                    Conditional.single(
+                      context: context,
+                      conditionBuilder: (context) =>
+                         cubit.bannersModel3 != null,
+                      widgetBuilder: (context) => Padding(
+                        padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
+                        child: CarouselSlider(
+                          options: CarouselOptions(
+                            onPageChanged: (index, carousalPageChangedReason) {
+                              // cubit.changeActiveIndex(index);
+                            },
+                            height: 135.0,
+                            scrollDirection: Axis.horizontal,
+                            initialPage: 1,
+                            scrollPhysics: const BouncingScrollPhysics(),
+                            autoPlay: true,
+                            autoPlayAnimationDuration:
+                                const Duration(seconds: 1),
+                            autoPlayCurve: Curves.fastLinearToSlowEaseIn,
+                            autoPlayInterval: const Duration(seconds: 3),
+                            viewportFraction: .99,
+                            enableInfiniteScroll: true,
+                            enlargeCenterPage: true,
+                          ),
+                          items: cubit.bannersModel3!.data
+                              .map((e) => Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10.0),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(15.0),
+                                      child:e.bannerUrl != '' ? Image.network(
+                                        BASE_URL2 + e.bannerUrl.toString(),
+                                        fit: BoxFit.contain,
+                                        width: double.infinity,
+                                        height: double.infinity,
+                                      ) :Image.asset(
+                                       'assets/images/noImageAvaliable.jpg',
+                                        fit: BoxFit.cover,
+                                        width: double.infinity,
+                                        height: double.infinity,
+                                      ) ,
+                                    ),
+                                  ))
+                              .toList(),
+                        ),
+                      ),
+                      fallbackBuilder: (context) => const SizedBox(
+                          height: 135.0,
+                          child: Center(
+                              child: CircularProgressIndicator(
+                            color: Colors.deepOrange,
+                            backgroundColor: Colors.grey,
+                          ))),
+                    ),
                     const SizedBox(
                       height: 20.0,
                     ),
-                    buildCardUnderBagsItemProducts(),
-                    const SizedBox(
-                      height: 20.0,
-                    ),
+                    //Todo : Bottom_Carousal_End
                   ],
                 ),
               ),

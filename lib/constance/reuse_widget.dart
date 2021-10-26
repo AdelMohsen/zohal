@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -37,15 +38,19 @@ whiteButton({
 
 defaultTextFormField(
         {String? hintText,
+        TextStyle? hintStyle,
         required TextInputType keyboardType,
         InputBorder? border,
         TextEditingController? controller,
         EdgeInsetsGeometry? contentPadding,
         Widget? prefixIcon,
         bool? enabled,
-        String? labelText}) =>
-    TextFormField(
+        String? labelText,
+        Function()? onEditingComplete,
+        Function(String)? onFieldSubmitted}) =>
+    TextFormField(onFieldSubmitted:onFieldSubmitted ,
       enabled: enabled,
+      onEditingComplete: onEditingComplete,
       validator: (value) => value!.isEmpty ? 'This field is required' : null,
       controller: controller,
       decoration: InputDecoration(
@@ -54,6 +59,7 @@ defaultTextFormField(
         filled: true,
         hintText: hintText ?? '',
         labelText: labelText ?? '',
+        hintStyle :hintStyle ,
         border: border ??
             OutlineInputBorder(
                 borderRadius: BorderRadius.circular(5),
@@ -119,3 +125,15 @@ navigateAndRemove(context, widget) => Navigator.pushAndRemoveUntil(
     context, MaterialPageRoute(builder: (context) => widget), (route) => false);
 
 navigateAndReplace(context,widget)=>  Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=>widget));
+
+
+extension IndexedIterable<E> on Iterable<E> {
+  Iterable<T> mapIndexed<T>(T Function(E e, int i) f) {
+    var i = 0;
+    return map((e) => f(e, i++));
+  }
+}
+
+String formatDate(String dateToFormat, bool isEnglish) => DateFormat(
+        isEnglish ? 'dd/MM/yyyy' : 'yyyy/MM/dd',
+      ).format(DateTime.parse(dateToFormat));

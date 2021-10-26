@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:auto_size_text_pk/auto_size_text_pk.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ import 'package:zohal/elements/products_details_widgets.dart';
 import 'package:zohal/logic_layer/home_cubit/home_cubit.dart';
 import 'package:zohal/logic_layer/home_cubit/home_state.dart';
 import 'package:zohal/models/products/new_items.dart';
+import 'package:zohal/presentation_layer/authentication/signup_or_login.dart';
 import 'package:zohal/presentation_layer/chat_screens/chat_with_vendor.dart';
 import 'package:zohal/presentation_layer/home_layout/cart_screen.dart';
 import 'package:zohal/presentation_layer/vendor/vendor_profile_with_customer.dart';
@@ -32,12 +34,13 @@ class ProductsDetails extends StatefulWidget {
 
 class _ProductsDetailsState extends State<ProductsDetails> {
   String _largeImage = '';
+  int decorationIdx = 0;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _largeImage = widget
-        .newItemDetails!.itemsData[widget.index!.toInt()].decoration![0].img1Url
+    _largeImage = widget.newItemDetails!.itemsData[widget.index!.toInt()]
+        .decoration![decorationIdx].img1Url
         .toString();
   }
 
@@ -71,7 +74,27 @@ class _ProductsDetailsState extends State<ProductsDetails> {
             actions: [
               IconButton(
                   onPressed: () {
-                    navigateTo(context, CartScreen());
+                    if (type != 4) {
+                      navigateTo(context, CartScreen());
+                    } else {
+                      AwesomeDialog(
+                        context: context,
+                        dialogType: DialogType.ERROR,
+                        animType: AnimType.TOPSLIDE,
+                        title: 'You must login first...!'.tr().toString(),
+                        btnCancelOnPress: () {},
+                        btnOkOnPress: () {
+                          navigateAndReplace(
+                            context,
+                            const SignupOrLogin(),
+                          );
+                        },
+                        btnOkText: 'Go to login',
+                        btnCancelText: 'Cancel'.tr().toString(),
+                        btnOkColor: Colors.red,
+                        btnCancelColor: const Color(0xFF00CA71),
+                      ).show();
+                    }
                   },
                   icon: Icon(
                     Icons.shopping_cart_outlined,
@@ -111,7 +134,7 @@ class _ProductsDetailsState extends State<ProductsDetails> {
                                 if (widget
                                         .newItemDetails!
                                         .itemsData[widget.index!.toInt()]
-                                        .decoration![0]
+                                        .decoration![decorationIdx]
                                         .img1Url !=
                                     null) {
                                   setState(() {
@@ -119,7 +142,7 @@ class _ProductsDetailsState extends State<ProductsDetails> {
                                         widget
                                             .newItemDetails!
                                             .itemsData[widget.index!.toInt()]
-                                            .decoration![0]
+                                            .decoration![decorationIdx]
                                             .img1Url
                                             .toString();
                                   });
@@ -131,14 +154,14 @@ class _ProductsDetailsState extends State<ProductsDetails> {
                                 image: widget
                                             .newItemDetails!
                                             .itemsData[widget.index!.toInt()]
-                                            .decoration![0]
+                                            .decoration![decorationIdx]
                                             .img1Url !=
                                         null
                                     ? NetworkImage(BASE_URL2 +
                                         widget
                                             .newItemDetails!
                                             .itemsData[widget.index!.toInt()]
-                                            .decoration![0]
+                                            .decoration![decorationIdx]
                                             .img1Url
                                             .toString())
                                     : Image.asset(
@@ -154,7 +177,7 @@ class _ProductsDetailsState extends State<ProductsDetails> {
                                 if (widget
                                         .newItemDetails!
                                         .itemsData[widget.index!.toInt()]
-                                        .decoration![0]
+                                        .decoration![decorationIdx]
                                         .img2Url !=
                                     null) {
                                   setState(() {
@@ -162,7 +185,7 @@ class _ProductsDetailsState extends State<ProductsDetails> {
                                         widget
                                             .newItemDetails!
                                             .itemsData[widget.index!.toInt()]
-                                            .decoration![0]
+                                            .decoration![decorationIdx]
                                             .img2Url
                                             .toString();
                                   });
@@ -174,14 +197,14 @@ class _ProductsDetailsState extends State<ProductsDetails> {
                                 image: widget
                                             .newItemDetails!
                                             .itemsData[widget.index!.toInt()]
-                                            .decoration![0]
+                                            .decoration![decorationIdx]
                                             .img2Url !=
                                         null
                                     ? NetworkImage(BASE_URL2 +
                                         widget
                                             .newItemDetails!
                                             .itemsData[widget.index!.toInt()]
-                                            .decoration![0]
+                                            .decoration![decorationIdx]
                                             .img2Url
                                             .toString())
                                     : Image.asset(
@@ -197,7 +220,7 @@ class _ProductsDetailsState extends State<ProductsDetails> {
                                 if (widget
                                         .newItemDetails!
                                         .itemsData[widget.index!.toInt()]
-                                        .decoration![0]
+                                        .decoration![decorationIdx]
                                         .img3Url !=
                                     null) {
                                   setState(() {
@@ -205,7 +228,7 @@ class _ProductsDetailsState extends State<ProductsDetails> {
                                         widget
                                             .newItemDetails!
                                             .itemsData[widget.index!.toInt()]
-                                            .decoration![0]
+                                            .decoration![decorationIdx]
                                             .img3Url
                                             .toString();
                                   });
@@ -217,14 +240,14 @@ class _ProductsDetailsState extends State<ProductsDetails> {
                                 image: widget
                                             .newItemDetails!
                                             .itemsData[widget.index!.toInt()]
-                                            .decoration![0]
+                                            .decoration![decorationIdx]
                                             .img3Url !=
                                         null
                                     ? NetworkImage(BASE_URL2 +
                                         widget
                                             .newItemDetails!
                                             .itemsData[widget.index!.toInt()]
-                                            .decoration![0]
+                                            .decoration![decorationIdx]
                                             .img3Url
                                             .toString())
                                     : Image.asset(
@@ -240,7 +263,7 @@ class _ProductsDetailsState extends State<ProductsDetails> {
                                 if (widget
                                         .newItemDetails!
                                         .itemsData[widget.index!.toInt()]
-                                        .decoration![0]
+                                        .decoration![decorationIdx]
                                         .img4Url !=
                                     null) {
                                   setState(() {
@@ -248,7 +271,7 @@ class _ProductsDetailsState extends State<ProductsDetails> {
                                         widget
                                             .newItemDetails!
                                             .itemsData[widget.index!.toInt()]
-                                            .decoration![0]
+                                            .decoration![decorationIdx]
                                             .img4Url
                                             .toString();
                                   });
@@ -260,14 +283,14 @@ class _ProductsDetailsState extends State<ProductsDetails> {
                                 image: widget
                                             .newItemDetails!
                                             .itemsData[widget.index!.toInt()]
-                                            .decoration![0]
+                                            .decoration![decorationIdx]
                                             .img4Url !=
                                         null
                                     ? NetworkImage(BASE_URL2 +
                                         widget
                                             .newItemDetails!
                                             .itemsData[widget.index!.toInt()]
-                                            .decoration![0]
+                                            .decoration![decorationIdx]
                                             .img4Url
                                             .toString())
                                     : Image.asset(
@@ -379,19 +402,17 @@ class _ProductsDetailsState extends State<ProductsDetails> {
                         ),
                       ],
                     ),
-
+                    const SizedBox(height: 12.0),
                     SizedBox(
                       height: 30,
                       child: Row(
                         children: [
-                          Text(
-                            'Colors :  '.tr().toString(),
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: HexColor('#072C3F'),
-                            ),
-                          ),
+                          AutoSizeText('Colors :  '.tr().toString(),
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: HexColor('#072C3F'),
+                              ),
+                              minFontSize: 14),
                           Expanded(
                             flex: 3,
                             child: SizedBox(
@@ -400,23 +421,47 @@ class _ProductsDetailsState extends State<ProductsDetails> {
                               child: ListView.separated(
                                 separatorBuilder: (context, index) =>
                                     const SizedBox(
-                                  width: 5.0,
+                                  width: 12.0,
                                 ),
                                 scrollDirection: Axis.horizontal,
-                                itemCount: 4,
-                                itemBuilder: (context, index) => Container(
-                                    width: 12,
-                                    height: 12,
-                                    decoration: BoxDecoration(
-                                        color: Colors.primaries[Random()
-                                            .nextInt(Colors.primaries.length)],
-                                        shape: BoxShape.circle)),
+                                itemCount: widget
+                                    .newItemDetails!
+                                    .itemsData[widget.index!.toInt()]
+                                    .decoration!
+                                    .length,
+                                itemBuilder: (context, idx) => InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      decorationIdx = idx.toInt();
+                                      print(idx.toInt());
+                                    });
+                                  },
+                                  child: Container(
+                                      
+                                      width: 30,
+                                      height: 30,
+                                      decoration: BoxDecoration(
+                                        border: decorationIdx == idx? 
+                                         Border.all(
+                                          color: Colors.deepOrange,
+                                          width: 1.55,) : Border.all(
+                                          color: Colors.white,
+                                          width: 1.55,)  ,
+                                          color: HexColor(widget
+                                              .newItemDetails!
+                                              .itemsData[widget.index!.toInt()]
+                                              .decoration![idx]
+                                              .color
+                                              .toString()),
+                                          shape: BoxShape.circle)),
+                                ),
                               ),
                             ),
                           ),
                         ],
                       ),
                     ),
+                    const SizedBox(height: 14.0),
                     //Build_Image_Details_End
 
                     //Quantity_Button_Start
@@ -577,7 +622,7 @@ class _ProductsDetailsState extends State<ProductsDetails> {
                               child: IconButton(
                                 padding: EdgeInsets.zero,
                                 onPressed: () {
-                                  cubit.addItemToFavourites(
+                                  cubit.addOrDeleteItemToFavourites(
                                       productId: widget.newItemDetails!
                                           .itemsData[widget.index!.toInt()].id
                                           .toString(),

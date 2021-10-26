@@ -1,3 +1,4 @@
+import 'package:auto_size_text_pk/auto_size_text_pk.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -5,13 +6,14 @@ import 'package:zohal/logic_layer/home_cubit/home_cubit.dart';
 
 buildQuantityButton(HomeCubit cubit) => Row(
       children: [
-        Text(
+        AutoSizeText(
           'Quantity :  ',
           style: TextStyle(
-            fontSize: 20,
+            
             fontWeight: FontWeight.bold,
             color: HexColor('#072C3F'),
           ),
+          minFontSize: 14
         ),
         Container(
           height: 30.0,

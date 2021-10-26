@@ -40,11 +40,23 @@ class GetUserDataErrorState extends HomeStates {
 
 class ChangeExpandedWidgetSuccessState extends HomeStates {}
 
-class GetBannersDataLoadingState extends HomeStates {}
+class GetMiddelBannersDataLoadingState extends HomeStates {}
 
-class GetBannersDataSuccessState extends HomeStates {}
+class GetMiddelBannersDataSuccessState extends HomeStates {}
 
-class GetBannersDataErrorState extends HomeStates {}
+class GetMiddelBannersDataErrorState extends HomeStates {}
+
+class GetTopBannersDataLoadingState extends HomeStates {}
+
+class GetTopBannersDataSuccessState extends HomeStates {}
+
+class GetTopBannersDataErrorState extends HomeStates {}
+
+class GetBottomBannersDataLoadingState extends HomeStates {}
+
+class GetBottomBannersDataSuccessState extends HomeStates {}
+
+class GetBottomBannersDataErrorState extends HomeStates {}
 
 class GetNewItemsDataLoadingState extends HomeStates {}
 
@@ -135,3 +147,39 @@ class AddToFavouritesLoadingState extends HomeStates {}
 class AddToFavouritesSuccessState extends HomeStates {}
 
 class AddToFavouritesErrorState extends HomeStates {}
+
+class DeleteAllFromFavouritesLoadingState extends HomeStates {}
+
+class DeleteAllFromFavouritesSuccessState extends HomeStates {}
+
+class DeleteAllFromFavouritesErrorState extends HomeStates {}
+class LoginAsVisitorLoadingState extends HomeStates {}
+
+class LoginAsVisitorSuccessState extends HomeStates {
+  String tokenId;
+  LoginAsVisitorSuccessState(this.tokenId);
+}
+
+class LoginAsVisitorErrorState extends HomeStates {}
+
+class ChangePersonalPasswordLoadingState extends HomeStates {}
+
+class ChangePersonalPasswordSuccessState extends HomeStates {}
+
+class ChangePersonalPasswordErrorState extends HomeStates {}
+
+class SearchLoadingState extends HomeStates {}
+
+class SearchSuccessState extends HomeStates {}
+
+class SearchErrorState extends HomeStates {}
+
+class PickedVendorImageLoadingState extends HomeStates {}
+
+//TODO:VENDDDDDOR
+
+class GetSubScribtionDataLoadingState extends HomeStates {}
+
+class GetSubScribtionDataSuccessState extends HomeStates {}
+
+class GetSubScribtionDataErrorState extends HomeStates {}

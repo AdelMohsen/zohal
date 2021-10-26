@@ -6,6 +6,7 @@ import 'package:zohal/constance/reuse_widget.dart';
 import 'package:zohal/logic_layer/home_cubit/home_cubit.dart';
 import 'package:zohal/logic_layer/home_cubit/home_state.dart';
 import 'package:zohal/presentation_layer/home_layout/home_nav_bar.dart';
+import 'package:zohal/products_section/electronics_screen.dart';
 
 buildHelpAndSettingsSection(HomeCubit cubit, BuildContext context) =>
     BlocProvider(
@@ -14,7 +15,6 @@ buildHelpAndSettingsSection(HomeCubit cubit, BuildContext context) =>
           listener: (context, state) {},
           builder: (context, state) {
             return Column(
-              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Column(
@@ -32,6 +32,7 @@ buildHelpAndSettingsSection(HomeCubit cubit, BuildContext context) =>
                         ),
                       ),
                     ),
+              //      ListView.builder(itemBuilder: (context,index)=>,itemCount: 5,),
                     ListTile(
                       title: drawerText(text: 'Home'.tr().toString()),
                       trailing: drawerIcon(),
@@ -55,6 +56,13 @@ buildHelpAndSettingsSection(HomeCubit cubit, BuildContext context) =>
                     ListTile(
                       title: drawerText(text: 'Sports'.tr().toString()),
                       trailing: drawerIcon(),
+                    ),
+                    ListTile(
+                      title: drawerText(text: 'Electronics'.tr().toString()),
+                      trailing: drawerIcon(),
+                      onTap: () {
+                        navigateTo(context, const ElectronicsScreen());
+                      },
                     ),
                     ListTile(
                       title:
@@ -97,7 +105,7 @@ buildHelpAndSettingsSection(HomeCubit cubit, BuildContext context) =>
                       icon: Image.asset('assets/home/outline.png')),
                   onTap: () async {
                     context.setLocale(const Locale('en'));
-                    navigateAndRemove(context, const HomeLayout());
+                    navigateAndRemove(context, HomeLayout());
                   },
                 ),
                 ListTile(
@@ -107,7 +115,7 @@ buildHelpAndSettingsSection(HomeCubit cubit, BuildContext context) =>
                       icon: Image.asset('assets/home/egypt.png')),
                   onTap: () async {
                     context.setLocale(const Locale('ar'));
-                    navigateAndRemove(context, const HomeLayout());
+                    navigateAndRemove(context, HomeLayout());
                   },
                 ),
                 ListTile(

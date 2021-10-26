@@ -1,6 +1,9 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:bloc/bloc.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:dio/dio.dart';
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,14 +23,19 @@ import 'package:zohal/models/brand/brand_model.dart';
 import 'package:zohal/models/categories/categories_model.dart';
 import 'package:zohal/models/favourites_model/favourites_model.dart';
 import 'package:zohal/models/products/new_items.dart';
+import 'package:zohal/models/search/search_model.dart';
 import 'package:zohal/models/shopping_cart/shopping_cart.dart';
+import 'package:zohal/models/vendor/vendor_subscribtion.dart';
 import 'package:zohal/network/dio_helper.dart';
 import 'package:zohal/presentation_layer/authentication/signup_or_login.dart';
 import 'package:zohal/presentation_layer/home_layout/cart_screen.dart';
 import 'package:zohal/presentation_layer/home_layout/favourite_screen.dart';
+import 'package:zohal/presentation_layer/home_layout/home_nav_bar.dart';
 import 'package:zohal/presentation_layer/home_layout/home_screen.dart';
 import 'package:zohal/presentation_layer/home_layout/new_screen.dart';
 import 'package:zohal/presentation_layer/home_layout/personal_screen.dart';
+import 'package:path/path.dart' as p;
+import 'package:http_parser/http_parser.dart';
 
 class HomeCubit extends Cubit<HomeStates> {
   HomeCubit() : super(InitialHomeState());
@@ -54,17 +62,40 @@ class HomeCubit extends Cubit<HomeStates> {
 //Get_User_Data_End
 
 //Get_Banners_Data_Start
-  BannersModel? bannersModel;
+  BannersModel? bannersModel1;
 
-  getBannersData() {
-    emit(GetBannersDataLoadingState());
-    DioHelper.getData(url: BANNERS_DETAILS, token: token).then((value) {
-      bannersModel = BannersModel.fromJson(value.data);
-
-      emit(GetBannersDataSuccessState());
+  getTopBannersData() {
+    emit(GetTopBannersDataLoadingState());
+    DioHelper.getData(url: TOP_BANNERS, token: token).then((value) {
+      bannersModel1 = BannersModel.fromJson(value.data);
+      emit(GetTopBannersDataSuccessState());
     }).catchError((error) {
       print(error.toString());
-      emit(GetBannersDataErrorState());
+      emit(GetTopBannersDataErrorState());
+    });
+  }
+
+  BannersModel? bannersModel2;
+  getMiddelBannersData() {
+    emit(GetMiddelBannersDataLoadingState());
+    DioHelper.getData(url: MIDDEL_BANNERS, token: token).then((value) {
+      bannersModel2 = BannersModel.fromJson(value.data);
+      emit(GetMiddelBannersDataSuccessState());
+    }).catchError((error) {
+      print(error.toString());
+      emit(GetMiddelBannersDataErrorState());
+    });
+  }
+
+  BannersModel? bannersModel3;
+  getBottomBannersData() {
+    emit(GetBottomBannersDataLoadingState());
+    DioHelper.getData(url: BOTTOM_BANNERS, token: token).then((value) {
+      bannersModel3 = BannersModel.fromJson(value.data);
+      emit(GetBottomBannersDataSuccessState());
+    }).catchError((error) {
+      print(error.toString());
+      emit(GetBottomBannersDataErrorState());
     });
   }
 
@@ -137,6 +168,11 @@ class HomeCubit extends Cubit<HomeStates> {
     BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Me'),
   ];
 
+  List<BottomNavigationBarItem> visitorItems = const [
+    BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Shop'),
+    BottomNavigationBarItem(icon: Icon(Icons.flash_on), label: 'New'),
+  ];
+
   void changeIndex(int index) {
     currentIndex = index;
     emit(HomeBottomNavState());
@@ -147,6 +183,11 @@ class HomeCubit extends Cubit<HomeStates> {
     const NewScreen(),
     const FavouritesScreen(),
     PersonalScreen(),
+  ];
+
+  List<Widget> visitorPages = [
+    const HomeScreen(),
+    const NewScreen(),
   ];
 
 //BOTTOM NAVIGATION BAR END
@@ -209,7 +250,7 @@ class HomeCubit extends Cubit<HomeStates> {
                 msg: value.data['message'],
                 backgroundColor: likeGreen,
                 textColor: Colors.white,
-                toastLength: Toast.LENGTH_LONG)
+                toastLength: Toast.LENGTH_SHORT)
             .then((_) {
           quantityCount = 1;
           navigateAndReplace(context, CartScreen());
@@ -221,7 +262,7 @@ class HomeCubit extends Cubit<HomeStates> {
           msg: value.data['message'],
           backgroundColor: Colors.red,
           textColor: Colors.white,
-          toastLength: Toast.LENGTH_LONG,
+          toastLength: Toast.LENGTH_SHORT,
         );
         emit(AddOrRemoveOrUpdateToShoppingCartErrorState());
       }
@@ -231,7 +272,6 @@ class HomeCubit extends Cubit<HomeStates> {
           backgroundColor: Colors.red,
           textColor: Colors.white,
           toastLength: Toast.LENGTH_SHORT);
-      print(error.toString());
       emit(AddOrRemoveOrUpdateToShoppingCartErrorState());
     });
   }
@@ -247,44 +287,190 @@ class HomeCubit extends Cubit<HomeStates> {
 //Vendor_Account_Start
 
 //image_picker
-  var vendorImage;
+  File? customerImage;
   var picker = ImagePicker();
 
-  Future<void> getCustomerGalleryImage(context) async {
+  Future<void> getCustomerGalleryImage({
+    required BuildContext context,
+    required String userId,
+  }) async {
     var pickedImage = await picker.pickImage(source: ImageSource.gallery);
     if (pickedImage != null) {
-      vendorImage = File(pickedImage.path);
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Image Changed')));
-      emit(PickedVendorImageSuccessState());
+      customerImage = File(pickedImage.path);
+      emit(PickedVendorImageLoadingState());
+      String fileName = pickedImage.name;
+      FormData formData = FormData.fromMap({
+        'image': await MultipartFile.fromFile(customerImage!.path,
+            filename: fileName,
+            contentType: MediaType(
+              'image',
+              p
+                  .extension(
+                    pickedImage.path,
+                  )
+                  .substring(1),
+            )),
+      });
+      DioHelper.postImage(
+              url: UPDATE_IMAGE,
+              userId: userId,
+              token: token.toString(),
+              data: formData)
+          .then((value) {
+        if (value.data['success'] == 0) {
+          Fluttertoast.showToast(
+              msg: value.data['message'],
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              toastLength: Toast.LENGTH_LONG);
+          emit(PickedVendorImageSuccessState());
+        } else {
+          Fluttertoast.showToast(
+              msg: value.data['message'],
+              backgroundColor: likeGreen,
+              textColor: Colors.white,
+              toastLength: Toast.LENGTH_LONG);
+          emit(PickedVendorImageSuccessState());
+        }
+      }).catchError((e) {
+        Fluttertoast.showToast(
+            msg: e.toString(),
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            toastLength: Toast.LENGTH_LONG);
+        emit(PickedVendorImageErrorState());
+      });
+
+      emit(PickedVendorImageErrorState());
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Error has been occurred')));
+        SnackBar(
+          content: Text(
+            "You didn't choose a picture".tr(),
+          ),
+        ),
+      );
       emit(PickedVendorImageErrorState());
     }
   }
 
-  Future<void> getCustomerCameraImage(context) async {
+  Future<void> getCustomerCameraImage({
+    required BuildContext context,
+    required String userId,
+  }) async {
     var pickedImage = await picker.pickImage(source: ImageSource.camera);
     if (pickedImage != null) {
-      vendorImage = File(pickedImage.path);
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Image Changed')));
-      emit(PickedVendorImageSuccessState());
+      customerImage = File(pickedImage.path);
+      emit(PickedVendorImageLoadingState());
+      String fileName = pickedImage.name;
+      FormData formData = FormData.fromMap({
+        'image': await MultipartFile.fromFile(customerImage!.path,
+            filename: fileName,
+            contentType: MediaType(
+              'image',
+              p
+                  .extension(
+                    pickedImage.path,
+                  )
+                  .substring(1),
+            )),
+      });
+      DioHelper.postImage(
+              url: UPDATE_IMAGE,
+              userId: userId,
+              token: token.toString(),
+              data: formData)
+          .then((value) {
+        if (value.data['success'] == 0) {
+          Fluttertoast.showToast(
+              msg: value.data['message'],
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              toastLength: Toast.LENGTH_LONG);
+          emit(PickedVendorImageSuccessState());
+        } else {
+          imageCache?.clear();
+          Fluttertoast.showToast(
+              msg: value.data['message'],
+              backgroundColor: likeGreen,
+              textColor: Colors.white,
+              toastLength: Toast.LENGTH_LONG);
+          emit(PickedVendorImageSuccessState());
+        }
+      }).catchError((e) {
+        Fluttertoast.showToast(
+            msg: e.toString(),
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            toastLength: Toast.LENGTH_LONG);
+        emit(PickedVendorImageErrorState());
+      });
+
+      emit(PickedVendorImageErrorState());
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Error has been occurred')));
+        SnackBar(
+          content: Text(
+            "You didn't choose a picture".tr(),
+          ),
+        ),
+      );
       emit(PickedVendorImageErrorState());
     }
   }
 
 //image_picker
 
+//TODO:Vendor_SubScribtion_Start
+  SubScribtionModel? subScribtionModel;
+  getSubScribtionData() {
+    emit(GetSubScribtionDataLoadingState());
+    DioHelper.getData(url: SUB_SCRIPTION, token: token).then((value) {
+      subScribtionModel = SubScribtionModel.fromJson(value.data);
+      emit(GetSubScribtionDataSuccessState());
+    }).catchError((error) {
+      Fluttertoast.showToast(msg: error.toString());
+      emit(GetSubScribtionDataErrorState());
+    });
+  }
+//TODO:Vendor_SubScribtion_End
+
+//VENDOR_IMAGE_START
+  File? vendorImage;
+
+  Future<void> getVendorGalleryImage(context) async {
+    var pickedImage = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedImage != null) {
+      customerImage = File(pickedImage.path);
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Image Changed')));
+      emit(PickedVendorImageSuccessState());
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error has been occurred')));
+      emit(PickedVendorImageErrorState());
+    }
+  }
+
+  Future<void> getVendorCameraImage(context) async {
+    var pickedImage = await picker.pickImage(source: ImageSource.camera);
+    if (pickedImage != null) {
+      customerImage = File(pickedImage.path);
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Image Changed')));
+      emit(PickedVendorImageSuccessState());
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error has been occurred')));
+      emit(PickedVendorImageErrorState());
+    }
+  }
+
 //Check_Camera_Permission_Start
   late Permission permission;
   PermissionStatus permissionStatus = PermissionStatus.denied;
 
-  void listenForCameraPermission(context) async {
+  void listenForCameraPermission(context, userId) async {
     final cameraStatus = await Permission.camera.status;
     permissionStatus = cameraStatus;
     emit(PermissionStatusGetValueSuccess());
@@ -293,7 +479,7 @@ class HomeCubit extends Cubit<HomeStates> {
         requestForCameraPermission();
         break;
       case PermissionStatus.granted:
-        getCustomerCameraImage(context);
+        getCustomerCameraImage(context: context, userId: userId);
         break;
       case PermissionStatus.limited:
         Navigator.pop(context);
@@ -319,7 +505,7 @@ class HomeCubit extends Cubit<HomeStates> {
   late Permission storagePermission;
   PermissionStatus storagePermissionStatus = PermissionStatus.denied;
 
-  void listenForStoragePermission(context) async {
+  void listenForStoragePermission({context, required String userId}) async {
     final storageStatus = await Permission.storage.status;
     storagePermissionStatus = storageStatus;
     emit(PermissionStatusGetValueSuccess());
@@ -328,7 +514,7 @@ class HomeCubit extends Cubit<HomeStates> {
         requestForStoragePermission();
         break;
       case PermissionStatus.granted:
-        getCustomerGalleryImage(context);
+        getCustomerGalleryImage(context: context, userId: userId);
         break;
       case PermissionStatus.limited:
         Navigator.pop(context);
@@ -420,7 +606,8 @@ class HomeCubit extends Cubit<HomeStates> {
     });
   }
 
-  addItemToFavourites({required String productId, required String toDelete}) {
+  addOrDeleteItemToFavourites(
+      {required String productId, required String toDelete}) {
     emit(AddToFavouritesLoadingState());
     DioHelper.postData(
             url: ADD_TO_FAVOURITES,
@@ -432,16 +619,20 @@ class HomeCubit extends Cubit<HomeStates> {
         .then((value) {
       if (value.data['success'] == 1) {
         Fluttertoast.showToast(
-            msg: value.data['message'],
-            backgroundColor: const Color(0xFF00CA71),
-            toastLength: Toast.LENGTH_LONG);
-
+                msg: value.data['message'],
+                backgroundColor: const Color(0xFF00CA71),
+                toastLength: Toast.LENGTH_SHORT)
+            .then((value) {
+          if (toDelete == "1") {
+            getFavouritesData();
+          }
+        });
         emit(AddToFavouritesSuccessState());
       } else {
         Fluttertoast.showToast(
             msg: value.data['message'],
             backgroundColor: Colors.red,
-            toastLength: Toast.LENGTH_LONG);
+            toastLength: Toast.LENGTH_SHORT);
         emit(AddToFavouritesErrorState());
       }
     }).catchError((error) {
@@ -450,6 +641,34 @@ class HomeCubit extends Cubit<HomeStates> {
           backgroundColor: Colors.red,
           toastLength: Toast.LENGTH_LONG);
       emit(AddToFavouritesErrorState());
+    });
+  }
+
+  deleteAllFromFavourites() {
+    emit(DeleteAllFromFavouritesLoadingState());
+    DioHelper.getData(url: DELETE_ALL_FAVOURITES, token: token).then((value) {
+      if (value.data['success'] == 1) {
+        Fluttertoast.showToast(
+                msg: value.data['message'],
+                backgroundColor: const Color(0xFF00CA71),
+                toastLength: Toast.LENGTH_LONG)
+            .then((value) {
+          getFavouritesData();
+          emit(DeleteAllFromFavouritesSuccessState());
+        });
+      } else {
+        Fluttertoast.showToast(
+            msg: value.data['message'],
+            backgroundColor: Colors.red,
+            toastLength: Toast.LENGTH_LONG);
+        emit(DeleteAllFromFavouritesErrorState());
+      }
+    }).catchError((error) {
+      Fluttertoast.showToast(
+          msg: error.toString(),
+          backgroundColor: Colors.red,
+          toastLength: Toast.LENGTH_LONG);
+      emit(DeleteAllFromFavouritesErrorState());
     });
   }
 
@@ -493,10 +712,69 @@ class HomeCubit extends Cubit<HomeStates> {
 //Personal_Screen_Start
   bool isExpanded = false;
 
+  var customerCurrentPasswordController = TextEditingController();
+  var customerNewPasswordController = TextEditingController();
+// var vendorReEnterNewPasswordController = TextEditingController();
+  var customerChangePasswordKey = GlobalKey<FormState>();
+
   changeExpandedWidget() {
     isExpanded = !isExpanded;
     emit(ChangeExpandedWidgetSuccessState());
   }
+
+  changeCustomerPassword({
+    required String oldPassword,
+    required String newPassword,
+    required BuildContext context,
+  }) {
+    emit(ChangePersonalPasswordLoadingState());
+    DioHelper.postData(
+            url: PROFILE_UPDATE,
+            data: {
+              "passwords": {
+                "oldPassword": oldPassword,
+                "newPassword": newPassword,
+              },
+            },
+            token: token.toString())
+        .then((value) {
+      if (value.data['success'] == 1) {
+        Fluttertoast.showToast(
+          msg: value.data['message'],
+          backgroundColor: likeGreen,
+          textColor: Colors.white,
+        ).then((value) {
+          Navigator.pop(context);
+        });
+
+        emit(ChangePersonalPasswordSuccessState());
+      } else {
+        Fluttertoast.showToast(
+                msg: value.data['message'],
+                backgroundColor: Colors.red,
+                textColor: Colors.white)
+            .then((value) {
+          customerCurrentPasswordController.text = '';
+          customerNewPasswordController.text = '';
+        });
+        emit(ChangePersonalPasswordErrorState());
+      }
+    }).catchError((error) {
+      Fluttertoast.showToast(
+          msg: error.toString(),
+          backgroundColor: Colors.red,
+          textColor: Colors.white);
+
+      emit(ChangePersonalPasswordErrorState());
+    });
+  }
+  // FormData formData = FormData.fromMap({
+  //   "image" : MultipartFile.fromBytes(value)
+  // });
+  // changeCustomerImage({required String userId,})async{
+  //   DioHelper.postImage(url: PROFILE_IMAGE, userId: userId,
+  //    token: token.toString(), data: formData);
+  // }
 
 //Personal_Screen_END
 
@@ -574,7 +852,6 @@ class HomeCubit extends Cubit<HomeStates> {
     ).then((value) {
       userData = UserData.fromJson(value.data);
       print(userData!.userInfo!.email);
-
       emit(GetProfileInfoSuccessState());
     }).catchError((error) {
       print(error.toString());
@@ -610,7 +887,45 @@ class HomeCubit extends Cubit<HomeStates> {
   }
 
 //Get_User_Profile_Data_END
+//VISITOR_LOGIN
+  loginAsVisitor(context) {
+    emit(LoginAsVisitorLoadingState());
+    DioHelper.getVisitorToken(url: VISITOR_LOG_IN).then((value) {
+      if (value.data['success'] == 1) {
+        userData = UserData.fromJson(value.data);
+        token = value.data['token']['id'];
+        type = 4;
+        navigateTo(context, HomeLayout());
+        emit(LoginAsVisitorSuccessState(value.data['token']['id']));
+      }
+    }).catchError((error) {
+      print(error.toString());
+      emit(LoginAsVisitorErrorState());
+    });
+  }
+//VISITOR_END
 
+//Search_START
+  SearchModel? searchModel;
+  searchData({required text}) {
+    emit(SearchLoadingState());
+    DioHelper.postData(
+            url: SEARCH_TEXT, data: {'name': text}, token: token.toString())
+        .then((value) {
+      searchModel = SearchModel.fromJson(value.data);
+      print(searchModel!.itemsData[0].name);
+      emit(SearchSuccessState());
+    }).catchError((error) {
+      Fluttertoast.showToast(
+        msg: error.toString(),
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+      );
+      emit(SearchErrorState());
+    });
+  }
+
+//Search_END
   getEmit() {
     emit(PersonalScreenChange());
   }
